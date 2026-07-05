@@ -2,253 +2,535 @@
 <html lang="id">
 
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Lacak Duit - Aplikasi Pencatat Keuangan Pribadi & Dompet Digital</title>
-
-    <!-- ✅ Meta SEO -->
-    <meta name="description"
-        content="LacakDuit membantu kamu mengatur keuangan harian dengan mudah. Catat pengeluaran, kelola dompet, dan pantau laporan keuanganmu kapan saja!">
-    <meta name="keywords"
-        content="LacakDuit, aplikasi keuangan, catatan keuangan, dompet digital, manajemen uang, keuangan pribadi, tabungan, keuangan harian">
-    <meta name="author" content="Maman">
-    <meta name="robots" content="index, follow">
-
-    <!-- ✅ Open Graph (untuk dibagikan di WhatsApp, Instagram, Facebook, dll) -->
-    <meta property="og:title" content="Lacak Duit - Aplikasi Keuangan Pribadi Modern" />
-    <meta property="og:description"
-        content="Catat pengeluaran, kelola dompet, dan lihat laporan keuangan dengan mudah lewat LacakDuit. Gratis & modern!" />
-    {{-- <meta property="og:image" content="https://i.imgur.com/4U3EvK7.png" /> --}}
-    <meta property="og:url" content="https://lacakduit.manzweb.my.id" />
-    <meta property="og:type" content="website" />
-
-    <!-- ✅ Favicon -->
-    <link rel="icon" href="{{ asset('assets/image/logo-noname.png') }}">
-
-    <!-- ✅ Tailwind -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lacak Duit — Kelola uangmu, tanpa drama</title>
     <script src="https://cdn.tailwindcss.com"></script>
-
-
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap"
+        rel="stylesheet">
     <style>
-        /* ✅ Animasi Modern */
-        @keyframes fadeInUp {
-            from {
-                opacity: 0;
-                transform: translateY(30px);
-            }
+        :root {
+            --bg: #FFFFFF;
+            --bg-soft: #F3FBF5;
+            --primary: #16A34A;
+            --primary-dark: #0E7C3A;
+            --primary-deep: #073B23;
+            --mint: #D9F7E4;
+            --ink: #0B1F17;
+            --ink-soft: #52685D;
+            --line: #DCEFE2;
+            --line2: #a0c6af;
+        }
 
-            to {
-                opacity: 1;
+        * {
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            color: var(--ink);
+            background: var(--bg);
+        }
+
+        .font-display {
+            font-family: 'Sora', sans-serif;
+        }
+
+        .font-mono {
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        .bg-soft {
+            background: var(--bg-soft);
+        }
+
+        .text-ink {
+            color: var(--ink);
+        }
+
+        .text-ink-soft {
+            color: var(--ink-soft);
+        }
+
+        .text-primary {
+            color: var(--primary);
+        }
+
+        .bg-primary {
+            background: var(--primary);
+        }
+
+        .bg-primary-dark {
+            background: var(--primary-dark);
+        }
+
+        .bg-primary-deep {
+            background: var(--primary-deep);
+        }
+
+        .bg-mint {
+            background: var(--mint);
+        }
+
+        .border-line {
+            border-color: var(--line);
+        }
+
+        .border-line2 {
+            border-color: var(--line2);
+        }
+
+        /* Receipt tape signature element */
+        .tape-wrap {
+            position: relative;
+            overflow: hidden;
+            -webkit-mask-image: linear-gradient(to bottom, transparent 0%, black 8%, black 92%, transparent 100%);
+            mask-image: linear-gradient(to bottom, transparent 0%, black 8%, black 92%, transparent 100%);
+        }
+
+        .tape-track {
+            animation: tape-scroll 16s linear infinite;
+        }
+
+        .tape-wrap:hover .tape-track {
+            animation-play-state: paused;
+        }
+
+        @keyframes tape-scroll {
+            from {
                 transform: translateY(0);
             }
-        }
-
-        @keyframes fadeIn {
-            from {
-                opacity: 0;
-            }
 
             to {
-                opacity: 1;
+                transform: translateY(-50%);
             }
         }
 
-        .animate-fadeIn {
-            animation: fadeIn 1s ease-in-out both;
+        .receipt-edge {
+            background-image: radial-gradient(circle at 0 6px, transparent 6px, var(--bg) 6.5px),
+                radial-gradient(circle at 100% 6px, transparent 6px, var(--bg) 6.5px);
+            background-size: 100% 12px;
+            background-repeat: repeat-y;
         }
 
-        .animate-fadeInUp {
-            animation: fadeInUp 1s ease-out both;
+        @media (prefers-reduced-motion: reduce) {
+            .tape-track {
+                animation: none;
+            }
+
+            html {
+                scroll-behavior: auto;
+            }
         }
 
-        .animate-delay-1 {
-            animation-delay: 0.3s;
+        .step-line {
+            background-image: repeating-linear-gradient(to bottom, var(--line) 0 6px, transparent 6px 12px);
         }
 
-        .animate-delay-2 {
-            animation-delay: 0.6s;
+        .card-hover {
+            transition: transform .25s ease, box-shadow .25s ease;
         }
 
-        .animate-delay-3 {
-            animation-delay: 0.9s;
+        .card-hover:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 20px 40px -18px rgba(7, 59, 35, 0.25);
+        }
+
+        .focus-ring:focus-visible {
+            outline: 2px solid var(--primary);
+            outline-offset: 2px;
+        }
+
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--line);
+            border-radius: 8px;
+        }
+
+        .view {
+            display: none;
+        }
+
+        .view.active {
+            display: block;
+        }
+
+        .drawer {
+            transition: transform .3s ease;
+        }
+
+        .modal-backdrop {
+            transition: opacity .2s ease;
         }
     </style>
 </head>
 
-<body class="bg-white text-gray-800 scroll-smooth">
+<body class="antialiased">
 
-    <!-- Navbar -->
-    <header class="fixed top-0 w-full bg-white/80 backdrop-blur-lg shadow-sm z-50 animate-fadeIn">
-        <div class="max-w-6xl mx-auto flex items-center justify-between px-6 py-4">
-            <a href="#" class="text-2xl font-bold text-emerald-600">LacakDuit</a>
-            <nav class="hidden md:flex space-x-8 font-medium">
-                <a href="#fitur" class="hover:text-emerald-600">Fitur</a>
-                <a href="#screenshot" class="hover:text-emerald-600">Tampilan</a>
-                <a href="#testimoni" class="hover:text-emerald-600">Testimoni</a>
-                <a href="#faq" class="hover:text-emerald-600">FAQ</a>
+    <!-- ============================================================ -->
+    <!-- LANDING PAGE VIEW -->
+    <!-- ============================================================ -->
+    <div id="view-landing" class="view active">
+
+        <!-- NAV -->
+        <header class="sticky top-0 z-40 bg-white/90 backdrop-blur border-b border-line">
+            <nav class="max-w-6xl mx-auto px-5 sm:px-8 h-16 flex items-center justify-between">
+                <a href="#" class="flex items-center gap-2 font-display font-bold text-lg">
+                    <span
+                        class="w-8 h-8 rounded-lg bg-primary text-white flex items-center justify-center text-sm">Rp</span>
+                    Lacak Duit
+                </a>
+                <div class="hidden md:flex items-center gap-8 text-sm font-medium text-ink-soft">
+                    <a href="#fitur" class="hover:text-primary transition-colors">Fitur</a>
+                    <a href="#cara-kerja" class="hover:text-primary transition-colors">Cara kerja</a>
+                    <a href="#harga" class="hover:text-primary transition-colors">Harga</a>
+                    <a href="#testimoni" class="hover:text-primary transition-colors">Testimoni</a>
+                </div>
+                <div class="hidden md:flex items-center gap-3">
+                    <a href="/login"><button
+                            class="focus-ring px-4 py-2 text-sm font-semibold text-ink-soft hover:text-primary transition-colors">Masuk</button></a>
+                    <a href="/register"><button
+                            class="focus-ring px-4 py-2 text-sm font-semibold rounded-full bg-primary text-white hover:bg-primary-dark transition-colors">Coba
+                            gratis</button></a>
+                </div>
+                <button onclick="toggleMobileNav()" class="md:hidden focus-ring p-2 -mr-2" aria-label="Buka menu">
+                    <svg id="icon-burger" width="22" height="22" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2" stroke-linecap="round">
+                        <path d="M4 6h16M4 12h16M4 18h16" />
+                    </svg>
+                </button>
             </nav>
-            <a href="{{ route('login') }}"
-                class="bg-emerald-600 text-white px-4 py-2 rounded-lg font-medium hover:bg-emerald-700 transition">
-                Coba Sekarang
-            </a>
-        </div>
-    </header>
+            <div id="mobile-nav" class="hidden md:hidden border-t border-line bg-white px-5 py-4 space-y-3">
+                <a href="#fitur" onclick="toggleMobileNav()" class="block text-sm font-medium text-ink-soft">Fitur</a>
+                <a href="#cara-kerja" onclick="toggleMobileNav()" class="block text-sm font-medium text-ink-soft">Cara
+                    kerja</a>
+                <a href="#harga" onclick="toggleMobileNav()" class="block text-sm font-medium text-ink-soft">Harga</a>
+                <a href="#testimoni" onclick="toggleMobileNav()"
+                    class="block text-sm font-medium text-ink-soft">Testimoni</a>
+                <div class="flex gap-3 pt-2">
+                    <a href="/login"
+                        class="focus-ring flex-1 px-4 py-2 text-sm font-semibold rounded-full border border-line text-center">
+                        Masuk
+                    </a>
 
-    <!-- Hero -->
-    <section class="pt-32 pb-20 text-center bg-gradient-to-b from-emerald-50 to-white">
-        <div class="max-w-3xl mx-auto px-6 animate-fadeInUp">
-            <h1 class="text-4xl md:text-5xl font-bold mb-4 leading-tight">
-                Kelola <span class="text-emerald-600">Keuanganmu</span> Lebih Cerdas dengan LacakDuit 💰
-            </h1>
-            <p class="text-gray-600 mb-8 text-lg">
-                Aplikasi pencatat keuangan yang membantu kamu mengatur pengeluaran, mencatat pemasukan,
-                dan melihat laporan keuangan harian dengan tampilan modern dan mudah digunakan.
-            </p>
-            <a href="https://app.lacakduit.manzweb.my.id"
-                class="bg-emerald-600 text-white px-6 py-3 rounded-lg text-lg font-medium hover:bg-emerald-700 transition">
-                Mulai Sekarang
-            </a>
-        </div>
-        <div class="mt-16 animate-fadeInUp animate-delay-2">
-            <img src="https://cdn.dribbble.com/userupload/11357115/file/original-fb91fc0d58f7a44660d0a5234688b8ed.png?resize=752x&vertical=center" alt="Dashboard LacakDuit"
-                class="mx-auto rounded-2xl shadow-xl w-10/12 md:w-8/12">
-        </div>
-    </section>
-
-    <!-- Fitur -->
-    <section id="fitur" class="py-20 bg-white">
-        <div class="max-w-6xl mx-auto px-6 text-center">
-            <h2 class="text-3xl font-bold mb-12 animate-fadeInUp">✨ Fitur Unggulan</h2>
-            <div class="grid md:grid-cols-3 gap-10">
-                <div
-                    class="p-8 border rounded-2xl shadow-sm hover:shadow-lg hover:-translate-y-2 transition animate-fadeInUp animate-delay-1">
-                    <img src="https://cdn-icons-png.flaticon.com/512/3246/3246797.png" class="w-16 mx-auto mb-4"
-                        alt="">
-                    <h3 class="text-xl font-semibold mb-2">Catat Transaksi</h3>
-                    <p class="text-gray-600 text-sm">Tambahkan pemasukan dan pengeluaran dengan mudah, kapan pun dan di
-                        mana pun.</p>
-                </div>
-                <div
-                    class="p-8 border rounded-2xl shadow-sm hover:shadow-lg hover:-translate-y-2 transition animate-fadeInUp animate-delay-2">
-                    <img src="https://cdn-icons-png.flaticon.com/512/3228/3228641.png" class="w-16 mx-auto mb-4"
-                        alt="">
-                    <h3 class="text-xl font-semibold mb-2">Laporan Keuangan</h3>
-                    <p class="text-gray-600 text-sm">Dapatkan ringkasan keuangan otomatis untuk memantau kondisi
-                        finansialmu.</p>
-                </div>
-                <div
-                    class="p-8 border rounded-2xl shadow-sm hover:shadow-lg hover:-translate-y-2 transition animate-fadeInUp animate-delay-3">
-                    <img src="https://cdn-icons-png.flaticon.com/512/3600/3600913.png" class="w-16 mx-auto mb-4"
-                        alt="">
-                    <h3 class="text-xl font-semibold mb-2">Manajemen Dompet</h3>
-                    <p class="text-gray-600 text-sm">Kelola berbagai sumber uang (tunai, rekening, e-wallet) dalam satu
-                        tempat.</p>
+                    <a href="/register"
+                        class="focus-ring flex-1 px-4 py-2 text-sm font-semibold rounded-full bg-primary text-white text-center">
+                        Coba Gratis
+                    </a>
                 </div>
             </div>
-        </div>
-    </section>
+        </header>
 
-    <!-- Screenshot -->
-    <section id="screenshot" class="py-20 bg-emerald-50">
-        <div class="max-w-6xl mx-auto px-6 text-center">
-            <h2 class="text-3xl font-bold mb-10 animate-fadeInUp">📱    Tampilan Aplikasi</h2>
-            <div class="grid md:grid-cols-3 gap-8">
-                <img src="https://cdn.dribbble.com/userupload/11357115/file/original-fb91fc0d58f7a44660d0a5234688b8ed.png?resize=752x&vertical=center"
-                    class="rounded-xl shadow-lg hover:scale-105 transition animate-fadeInUp" alt="">
-                <img src="https://cdn.dribbble.com/userupload/11357115/file/original-fb91fc0d58f7a44660d0a5234688b8ed.png?resize=752x&vertical=center"
-                    class="rounded-xl shadow-lg hover:scale-105 transition animate-fadeInUp animate-delay-1"
-                    alt="">
-                <img src="https://cdn.dribbble.com/userupload/11357115/file/original-fb91fc0d58f7a44660d0a5234688b8ed.png?resize=752x&vertical=center"
-                    class="rounded-xl shadow-lg hover:scale-105 transition animate-fadeInUp animate-delay-2"
-                    alt="">
-            </div>
-        </div>
-    </section>
-
-    <!-- Testimoni -->
-    <section id="testimoni" class="py-20 bg-white">
-        <div class="max-w-5xl mx-auto px-6 text-center">
-            <h2 class="text-3xl font-bold mb-12 animate-fadeInUp">💬 Apa Kata Pengguna</h2>
-            <div class="grid md:grid-cols-3 gap-8">
-                <div class="p-6 border rounded-2xl shadow-sm hover:shadow-md transition animate-fadeInUp">
-                    <p class="italic text-gray-600 mb-4">“Sekarang aku bisa tahu ke mana aja uangku pergi tiap bulan.
-                        Super berguna!”</p>
-                    <h4 class="font-semibold text-emerald-600">— Rina, Mahasiswa</h4>
-                </div>
-                <div
-                    class="p-6 border rounded-2xl shadow-sm hover:shadow-md transition animate-fadeInUp animate-delay-1">
-                    <p class="italic text-gray-600 mb-4">“Desainnya clean banget, mudah dipakai. Cocok buat anak muda.”
+        <!-- HERO -->
+        <section class="bg-soft border-b border-line">
+            <div class="max-w-6xl mx-auto px-5 sm:px-8 py-14 md:py-20 grid md:grid-cols-2 gap-12 items-center">
+                <div>
+                    <span
+                        class="inline-flex items-center gap-2 text-xs font-semibold tracking-wide uppercase text-primary bg-mint px-3 py-1 rounded-full">Untuk
+                        kamu yang gajian tapi tetap bingung uang ke mana</span>
+                    <h1 class="font-display font-extrabold text-4xl sm:text-5xl leading-tight mt-5">
+                        Setiap rupiah,<br> tercatat dengan sendirinya.
+                    </h1>
+                    <p class="text-ink-soft text-lg mt-5 max-w-md">
+                        Lacak Duit merapikan transaksimu jadi kategori yang masuk akal, menghitung sisa anggaran secara
+                        real-time, dan kasih tahu sebelum dompetmu kaget di akhir bulan.
                     </p>
-                    <h4 class="font-semibold text-emerald-600">— Aldi, Freelancer</h4>
+                    <div class="flex flex-wrap gap-3 mt-8">
+                        <button onclick="openLogin()"
+                            class="focus-ring px-6 py-3 rounded-full bg-primary text-white font-semibold hover:bg-primary-dark transition-colors">Mulai
+                            lacak gratis</button>
+                        <a href="#cara-kerja"
+                            class="focus-ring px-6 py-3 rounded-full border border-line font-semibold text-ink hover:border-primary hover:text-primary transition-colors">Lihat
+                            cara kerja</a>
+                    </div>
+                    <div class="flex items-center gap-6 mt-8 text-sm text-ink-soft">
+                        <div><span class="font-display font-bold text-ink text-lg">42rb+</span> pengguna aktif</div>
+                        <div><span class="font-display font-bold text-ink text-lg">Rp1,2T</span> transaksi tercatat
+                        </div>
+                    </div>
                 </div>
-                <div
-                    class="p-6 border rounded-2xl shadow-sm hover:shadow-md transition animate-fadeInUp animate-delay-2">
-                    <p class="italic text-gray-600 mb-4">“Aku bisa atur kas dan tabungan dengan lebih rapi. Mantap!”</p>
-                    <h4 class="font-semibold text-emerald-600">— Bima, Siswa SMK</h4>
+
+                <!-- Signature: living receipt tape -->
+                <div class="relative mx-auto w-full max-w-xs">
+                    <div class="absolute -inset-4 bg-primary/5 rounded-[2rem] rotate-2"></div>
+                    <div
+                        class="relative bg-white border border-line rounded-3xl shadow-xl shadow-primary/10 overflow-hidden">
+                        <div
+                            class="px-5 pt-5 pb-3 border-b border-dashed border-line flex items-center justify-between">
+                            <div>
+                                <p class="text-xs text-ink-soft">Saldo hari ini</p>
+                                <p class="font-mono font-bold text-2xl">Rp3.240.500</p>
+                            </div>
+                            <span class="text-xs font-semibold text-primary bg-mint px-2 py-1 rounded-full">+12%</span>
+                        </div>
+                        <div class="tape-wrap h-72 px-5 py-2">
+                            <div class="tape-track">
+                                <div id="tape-content"></div>
+                                <div id="tape-content-dup"></div>
+                            </div>
+                        </div>
+                        <div class="receipt-edge h-3"></div>
+                    </div>
                 </div>
             </div>
-        </div>
-    </section>
+        </section>
 
-    <!-- FAQ -->
-    <section id="faq" class="py-20 bg-emerald-50">
-        <div class="max-w-4xl mx-auto px-6">
-            <h2 class="text-3xl font-bold text-center mb-10 animate-fadeInUp">❓ Pertanyaan yang Sering Diajukan</h2>
-            <div class="space-y-4">
-                <details class="bg-white p-5 rounded-xl shadow-sm animate-fadeInUp">
-                    <summary class="font-semibold text-emerald-700 cursor-pointer">Apakah LacakDuit gratis digunakan?
-                    </summary>
-                    <p class="mt-3 text-gray-600">Ya, LacakDuit bisa digunakan secara gratis tanpa batas fitur dasar.
-                    </p>
-                </details>
-                <details class="bg-white p-5 rounded-xl shadow-sm animate-fadeInUp animate-delay-1">
-                    <summary class="font-semibold text-emerald-700 cursor-pointer">Apakah data saya aman?</summary>
-                    <p class="mt-3 text-gray-600">
-                        Ya, aman digunakan 👍 <strong>Lacak Duit</strong> tidak menyimpan data sensitif pengguna.
-                        Semua data keuangan hanya berupa catatan umum seperti pemasukan, pengeluaran, dan saldo dompet,
-                        sedangkan kata sandi kamu dilindungi dengan enkripsi.
-                    </p>
-                </details>
-                <details class="bg-white p-5 rounded-xl shadow-sm animate-fadeInUp animate-delay-2">
-                    <summary class="font-semibold text-emerald-700 cursor-pointer">Apakah bisa digunakan di HP?
-                    </summary>
-                    <p class="mt-3 text-gray-600">Bisa banget! LacakDuit sudah dioptimalkan agar tampil sempurna di
-                        layar smartphone.</p>
-                </details>
-                <details class="bg-white p-5 rounded-xl shadow-sm animate-fadeInUp animate-delay-5">
-    <summary class="font-semibold text-emerald-700 cursor-pointer">Apakah ada fitur pengingat harian, target tabungan, atau catatan utang?</summary>
-    <p class="mt-3 text-gray-600">
-        Saat ini fitur seperti pengingat rekap harian, target tabungan bulanan (to-do list), serta pencatatan utang dan piutang masih dalam tahap pengembangan.
-        Nantinya, semua fitur ini akan membantu kamu memantau keuangan lebih detail dan teratur setiap hari.
-    </p>
-</details>
-
-<details class="bg-white p-5 rounded-xl shadow-sm animate-fadeInUp animate-delay-7">
-    <summary class="font-semibold text-emerald-700 cursor-pointer">Apakah ada versi premium?</summary>
-    <p class="mt-3 text-gray-600">
-                Belum ada rencana untuk fitur premium atau berbayar. Saat ini, LacakDuit sepenuhnya gratis dan fokus menghadirkan pengalaman terbaik untuk mengatur keuangan pribadi anda.
-    </p>
-</details>
-
+        <!-- FITUR -->
+        <section id="fitur" class="max-w-6xl mx-auto px-5 sm:px-8 py-16 md:py-24">
+            <div class="max-w-xl mb-12">
+                <span class="text-xs font-semibold tracking-wide uppercase text-primary">Fitur</span>
+                <h2 class="font-display font-bold text-3xl sm:text-4xl mt-3">Bukan sekadar buku catatan digital</h2>
+                <p class="text-ink-soft mt-3">Empat hal yang bikin Lacak Duit terasa ringan dipakai setiap hari.</p>
             </div>
-        </div>
-    </section>
+            <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-5">
+                <div class="card-hover border border-line rounded-2xl p-6 bg-white">
+                    <div class="w-11 h-11 rounded-xl bg-mint flex items-center justify-center mb-4">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#0E7C3A"
+                            stroke-width="2">
+                            <path
+                                d="M3 10h18M7 15h4M5 6h14a2 2 0 012 2v10a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2z" />
+                        </svg>
+                    </div>
+                    <h3 class="font-display font-semibold text-lg">Catat otomatis</h3>
+                    <p class="text-sm text-ink-soft mt-2">Hubungkan e-wallet dan rekening, transaksi masuk sendiri
+                        tanpa kamu ketik manual.</p>
+                </div>
+                <div class="card-hover border border-line rounded-2xl p-6 bg-white">
+                    <div class="w-11 h-11 rounded-xl bg-mint flex items-center justify-center mb-4">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#0E7C3A"
+                            stroke-width="2">
+                            <path d="M12 3v18M3 12h18" stroke-linecap="round" />
+                            <circle cx="12" cy="12" r="9" />
+                        </svg>
+                    </div>
+                    <h3 class="font-display font-semibold text-lg">Kategori cerdas</h3>
+                    <p class="text-sm text-ink-soft mt-2">Sistem belajar kebiasaanmu dan menandai setiap transaksi ke
+                        kategori yang tepat.</p>
+                </div>
+                <div class="card-hover border border-line rounded-2xl p-6 bg-white">
+                    <div class="w-11 h-11 rounded-xl bg-mint flex items-center justify-center mb-4">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#0E7C3A"
+                            stroke-width="2">
+                            <rect x="3" y="4" width="18" height="16" rx="2" />
+                            <path d="M3 9h18M8 4v-1M16 4v-1" />
+                        </svg>
+                    </div>
+                    <h3 class="font-display font-semibold text-lg">Anggaran bulanan</h3>
+                    <p class="text-sm text-ink-soft mt-2">Tetapkan batas per kategori, dapat peringatan sebelum kamu
+                        kebablasan belanja.</p>
+                </div>
+                <div class="card-hover border border-line rounded-2xl p-6 bg-white">
+                    <div class="w-11 h-11 rounded-xl bg-mint flex items-center justify-center mb-4">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#0E7C3A"
+                            stroke-width="2">
+                            <path d="M4 19V9M11 19V5M18 19v-7" />
+                        </svg>
+                    </div>
+                    <h3 class="font-display font-semibold text-lg">Laporan jelas</h3>
+                    <p class="text-sm text-ink-soft mt-2">Lihat ke mana uangmu pergi tiap bulan lewat grafik yang
+                        gampang dibaca.</p>
+                </div>
+            </div>
+        </section>
 
-    <!-- CTA -->
-    <section id="cta" class="py-20 bg-emerald-600 text-white text-center animate-fadeInUp">
-        <h2 class="text-4xl font-bold mb-6">Yuk mulai kelola uangmu sekarang!</h2>
-        <p class="mb-8 text-lg">Bebas digunakan, ringan, dan membantu kamu jadi lebih hemat 💪</p>
-        <a href="https://app.lacakduit.manzweb.my.id"
-            class="bg-white text-emerald-700 font-semibold px-8 py-3 rounded-lg hover:bg-gray-100 transition">
-            Gunakan LacakDuit Sekarang
-        </a>
-    </section>
+        <!-- CARA KERJA -->
+        <section id="cara-kerja" class="bg-soft border-y border-line">
+            <div class="max-w-6xl mx-auto px-5 sm:px-8 py-16 md:py-24">
+                <div class="max-w-xl mb-12">
+                    <span class="text-xs font-semibold tracking-wide uppercase text-primary">Cara kerja</span>
+                    <h2 class="font-display font-bold text-3xl sm:text-4xl mt-3">Tiga langkah, mulai hari ini</h2>
+                </div>
+                <div class="grid md:grid-cols-3 gap-x-8 sm:ml-7">
+                    <div
+                        class="relative pl-10 pb-10 md:pb-0  md:bg-none border-l md:border-1-0 border-line2 md:border-none">
+                        <span
+                            class="absolute left-0 -translate-x-1/2 md:static md:-mb-16 md:mb-0 font-display font-bold text-3xl text-primary/20">01</span>
+                        <h3 class="font-display font-semibold text-lg mt-6 md:mt-10">Daftar dalam 1 menit</h3>
+                        <p class="text-sm text-ink-soft mt-2">Cukup email dan nama, tanpa formulir panjang.</p>
+                    </div>
+                    <div
+                        class="relative pl-10 pb-10 md:pb-0 md:bg-none border-l md:border-1-0 border-line2 md:border-none">
+                        <span
+                            class="absolute left-0 -translate-x-1/2 md:static md:-mb-16 md:mb-0 font-display font-bold text-3xl text-primary/20">02</span>
+                        <h3 class="font-display font-semibold text-lg mt-6 md:mt-10">Hubungkan sumber uangmu</h3>
+                        <p class="text-sm text-ink-soft mt-2">E-wallet, rekening, atau catat manual — bebas pilih.</p>
+                    </div>
+                    <div class="relative pl-10">
+                        <span
+                            class="absolute left-0 -translate-x-1/2 md:static md:-mb-16 md:mb-0 font-display font-bold text-3xl text-primary/20">03</span>
+                        <h3 class="font-display font-semibold text-lg mt-6 md:mt-10">Pantau dari dashboard</h3>
+                        <p class="text-sm text-ink-soft mt-2">Saldo, anggaran, dan laporan ada di satu layar.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
 
-    <!-- Footer -->
-    <footer class="py-8 text-center text-sm text-gray-500 bg-gray-50 animate-fadeIn">
-        © 2025 LacakDuit. Dibuat dengan 💚 oleh <a href="https://manzweb.my.id">Maman</a>.
-    </footer>
+        <!-- HARGA -->
+        <section id="harga" class="max-w-6xl mx-auto px-5 sm:px-8 py-16 md:py-24">
+            <div class="max-w-xl mb-12">
+                <span class="text-xs font-semibold tracking-wide uppercase text-primary">Harga</span>
+                <h2 class="font-display font-bold text-3xl sm:text-4xl mt-3">Mulai gratis, upgrade kalau perlu</h2>
+            </div>
+            <div class="grid sm:grid-cols-2 gap-6 max-w-3xl">
+                <div class="border border-line rounded-2xl p-8 bg-white">
+                    <h3 class="font-display font-semibold text-lg">Gratis</h3>
+                    <p class="font-display font-bold text-4xl mt-3">Rp0</p>
+                    <p class="text-sm text-ink-soft mt-1">selamanya</p>
+                    <ul class="mt-6 space-y-3 text-sm text-ink-soft">
+                        <li class="flex gap-2"><span class="text-primary">✓</span>Catat transaksi manual tanpa batas
+                        </li>
+                        <li class="flex gap-2"><span class="text-primary">✓</span>1 anggaran bulanan</li>
+                        <li class="flex gap-2"><span class="text-primary">✓</span>Laporan bulan berjalan</li>
+                    </ul>
+                    <button onclick="openLogin()"
+                        class="focus-ring w-full mt-8 px-5 py-3 rounded-full border border-line font-semibold hover:border-primary hover:text-primary transition-colors">Pilih
+                        Gratis</button>
+                </div>
+                <div class="border-2 border-primary rounded-2xl p-8 bg-white relative">
+                    <span
+                        class="absolute -top-3 left-8 bg-primary text-white text-xs font-semibold px-3 py-1 rounded-full">Paling
+                        populer</span>
+                    <h3 class="font-display font-semibold text-lg">Pro</h3>
+                    <p class="font-display font-bold text-4xl mt-3">Rp29rb<span
+                            class="text-base font-medium text-ink-soft">/bulan</span></p>
+                    <p class="text-sm text-ink-soft mt-1">ditagih bulanan</p>
+                    <ul class="mt-6 space-y-3 text-sm text-ink-soft">
+                        <li class="flex gap-2"><span class="text-primary">✓</span>Sinkron otomatis e-wallet & bank
+                        </li>
+                        <li class="flex gap-2"><span class="text-primary">✓</span>Anggaran per kategori tanpa batas
+                        </li>
+                        <li class="flex gap-2"><span class="text-primary">✓</span>Riwayat & ekspor laporan penuh</li>
+                    </ul>
+                    <button onclick="openLogin()"
+                        class="focus-ring w-full mt-8 px-5 py-3 rounded-full bg-primary text-white font-semibold hover:bg-primary-dark transition-colors">Pilih
+                        Pro</button>
+                </div>
+            </div>
+        </section>
 
+        <!-- TESTIMONI -->
+        <section id="testimoni" class="bg-soft border-y border-line">
+            <div class="max-w-6xl mx-auto px-5 sm:px-8 py-16 md:py-24">
+                <div class="max-w-xl mb-12">
+                    <span class="text-xs font-semibold tracking-wide uppercase text-primary">Testimoni</span>
+                    <h2 class="font-display font-bold text-3xl sm:text-4xl mt-3">Dipercaya orang yang gajinya juga
+                        habis begitu saja</h2>
+                </div>
+                <div class="grid md:grid-cols-3 gap-5">
+                    <div class="bg-white border border-line rounded-2xl p-6">
+                        <p class="text-sm text-ink-soft">"Baru dua minggu pakai, saya sadar jajan kopi ternyata makan
+                            seperempat gaji. Sekarang ada batasnya."</p>
+                        <p class="font-display font-semibold text-sm mt-4">Dinda R. — Karyawan swasta</p>
+                    </div>
+                    <div class="bg-white border border-line rounded-2xl p-6">
+                        <p class="text-sm text-ink-soft">"Sebagai freelancer, pemasukan saya nggak tetap. Lacak Duit
+                            bantu saya lihat pola pengeluaran tiap bulan."</p>
+                        <p class="font-display font-semibold text-sm mt-4">Bayu S. — Desainer lepas</p>
+                    </div>
+                    <div class="bg-white border border-line rounded-2xl p-6">
+                        <p class="text-sm text-ink-soft">"Notifikasi anggaran hampir habis itu simpel tapi kena banget.
+                            Nggak lagi kaget di tanggal tua."</p>
+                        <p class="font-display font-semibold text-sm mt-4">Citra W. — Mahasiswa</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- CTA -->
+        <section class="max-w-6xl mx-auto px-5 sm:px-8 py-16 md:py-20">
+            <div class="bg-primary-deep rounded-3xl px-8 py-14 text-center text-white">
+                <h2 class="font-display font-bold text-3xl sm:text-4xl">Uangmu kerja lebih keras kalau kamu tahu ke
+                    mana perginya.</h2>
+                <button onclick="openLogin()"
+                    class="focus-ring mt-8 px-7 py-3 rounded-full bg-white text-primary-deep font-semibold hover:bg-mint transition-colors">Mulai
+                    lacak sekarang, gratis</button>
+            </div>
+        </section>
+
+        <!-- FOOTER -->
+        <footer class="border-t border-line">
+            <div
+                class="max-w-6xl mx-auto px-5 sm:px-8 py-10 flex flex-col sm:flex-row items-center justify-between gap-4 text-sm text-ink-soft">
+                <div class="flex items-center gap-2 font-display font-bold text-ink">
+                    <span
+                        class="w-7 h-7 rounded-lg bg-primary text-white flex items-center justify-center text-xs">Rp</span>
+                    Lacak Duit
+                </div>
+                <p>© 2026 Lacak Duit. Semua hak dilindungi.</p>
+            </div>
+        </footer>
+    </div>
+
+
+    <script>
+        /* ---------- Utilities ---------- */
+        function formatRp(n) {
+            const sign = n < 0 ? '-' : '';
+            return sign + 'Rp' + Math.abs(Math.round(n)).toLocaleString('id-ID');
+        }
+
+        /* ---------- Landing: mobile nav ---------- */
+        function toggleMobileNav() {
+            document.getElementById('mobile-nav').classList.toggle('hidden');
+        }
+
+        /* ---------- Hero receipt tape ---------- */
+        const tapeItems = [{
+                name: 'Kopi Kenangan',
+                cat: 'Makan & Minum',
+                amount: -27000
+            },
+            {
+                name: 'Gaji bulanan',
+                cat: 'Pemasukan',
+                amount: 4500000
+            },
+            {
+                name: 'Gojek ke kantor',
+                cat: 'Transportasi',
+                amount: -18000
+            },
+            {
+                name: 'Langganan Netflix',
+                cat: 'Hiburan',
+                amount: -54000
+            },
+            {
+                name: 'Belanja mingguan',
+                cat: 'Belanja',
+                amount: -210000
+            },
+            {
+                name: 'Token listrik',
+                cat: 'Tagihan',
+                amount: -150000
+            },
+        ];
+
+        function renderTape() {
+            const html = tapeItems.map(t => `
+    <div class="flex items-center justify-between py-2.5 border-b border-dashed border-line last:border-0">
+      <div>
+        <p class="text-sm font-medium">${t.name}</p>
+        <p class="text-xs text-ink-soft">${t.cat}</p>
+      </div>
+      <p class="font-mono text-sm font-semibold ${t.amount < 0 ? 'text-ink' : 'text-primary'}">${formatRp(t.amount)}</p>
+    </div>`).join('');
+            document.getElementById('tape-content').innerHTML = html;
+            document.getElementById('tape-content-dup').innerHTML = html;
+        }
+        renderTape();
+    </script>
 </body>
 
 </html>
