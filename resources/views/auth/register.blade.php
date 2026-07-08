@@ -272,7 +272,7 @@
 
                     </div>
 
-                    <form class="space-y-5">
+                    <form class="space-y-5" action="{{ route('register') }}" method="POST">
 
                         <div>
 
@@ -280,7 +280,7 @@
                                 Nama Lengkap
                             </label>
 
-                            <input type="text" placeholder="Masukkan nama lengkap"
+                            <input type="text" name="name" placeholder="Masukkan nama lengkap"
                                 class="w-full rounded-xl border border-line px-4 py-3 focus:ring-2 focus:ring-primary focus:outline-none">
 
                         </div>
@@ -291,7 +291,7 @@
                                 Email
                             </label>
 
-                            <input type="email" placeholder="nama@email.com"
+                            <input type="email" name="email" placeholder="nama@email.com"
                                 class="w-full rounded-xl border border-line px-4 py-3 focus:ring-2 focus:ring-primary focus:outline-none">
 
                         </div>
@@ -304,7 +304,7 @@
 
                             <div class="relative">
 
-                                <input id="password" type="password" placeholder="Minimal 8 karakter"
+                                <input id="password" name="password" type="password" placeholder="Minimal 8 karakter"
                                     class="w-full rounded-xl border border-line px-4 py-3 pr-12 focus:ring-2 focus:ring-primary focus:outline-none">
 
                                 <button type="button" onclick="togglePassword('password')"
@@ -326,7 +326,8 @@
 
                             <div class="relative">
 
-                                <input id="confirm" type="password" placeholder="Ulangi password"
+                                <input id="confirm" name="password_confirmation" type="password"
+                                    placeholder="Ulangi password"
                                     class="w-full rounded-xl border border-line px-4 py-3 pr-12 focus:ring-2 focus:ring-primary focus:outline-none">
 
                                 <button type="button" onclick="togglePassword('confirm')"
@@ -359,7 +360,7 @@
 
                         </label>
 
-                        <button
+                        <button type="submit"
                             class="w-full py-3 rounded-xl bg-primary text-white font-semibold hover:bg-primary-dark transition">
 
                             Daftar Sekarang
@@ -372,7 +373,7 @@
 
                         Sudah punya akun?
 
-                        <a href="login.html" class="text-primary font-semibold hover:underline">
+                        <a href="{{ route('login') }}" class="text-primary font-semibold hover:underline">
 
                             Masuk
 

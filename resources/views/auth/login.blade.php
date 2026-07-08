@@ -8,161 +8,161 @@
 
     <script src="https://cdn.tailwindcss.com"></script>
 
-        <style>
-            :root {
-                --bg: #FFFFFF;
-                --bg-soft: #F3FBF5;
-                --primary: #16A34A;
-                --primary-dark: #0E7C3A;
-                --primary-deep: #073B23;
-                --mint: #D9F7E4;
-                --ink: #0B1F17;
-                --ink-soft: #52685D;
-                --line: #DCEFE2;
-                --line2: #a0c6af;
+    <style>
+        :root {
+            --bg: #FFFFFF;
+            --bg-soft: #F3FBF5;
+            --primary: #16A34A;
+            --primary-dark: #0E7C3A;
+            --primary-deep: #073B23;
+            --mint: #D9F7E4;
+            --ink: #0B1F17;
+            --ink-soft: #52685D;
+            --line: #DCEFE2;
+            --line2: #a0c6af;
+        }
+
+        * {
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            color: var(--ink);
+            background: var(--bg);
+        }
+
+        .font-display {
+            font-family: 'Sora', sans-serif;
+        }
+
+        .font-mono {
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        .bg-soft {
+            background: var(--bg-soft);
+        }
+
+        .text-ink {
+            color: var(--ink);
+        }
+
+        .text-ink-soft {
+            color: var(--ink-soft);
+        }
+
+        .text-primary {
+            color: var(--primary);
+        }
+
+        .bg-primary {
+            background: var(--primary);
+        }
+
+        .bg-primary-dark {
+            background: var(--primary-dark);
+        }
+
+        .bg-primary-deep {
+            background: var(--primary-deep);
+        }
+
+        .bg-mint {
+            background: var(--mint);
+        }
+
+        .border-line {
+            border-color: var(--line);
+        }
+
+        .border-line2 {
+            border-color: var(--line2);
+        }
+
+        /* Receipt tape signature element */
+        .tape-wrap {
+            position: relative;
+            overflow: hidden;
+            -webkit-mask-image: linear-gradient(to bottom, transparent 0%, black 8%, black 92%, transparent 100%);
+            mask-image: linear-gradient(to bottom, transparent 0%, black 8%, black 92%, transparent 100%);
+        }
+
+        .tape-track {
+            animation: tape-scroll 16s linear infinite;
+        }
+
+        .tape-wrap:hover .tape-track {
+            animation-play-state: paused;
+        }
+
+        @keyframes tape-scroll {
+            from {
+                transform: translateY(0);
             }
 
-            * {
-                -webkit-tap-highlight-color: transparent;
+            to {
+                transform: translateY(-50%);
+            }
+        }
+
+        .receipt-edge {
+            background-image: radial-gradient(circle at 0 6px, transparent 6px, var(--bg) 6.5px),
+                radial-gradient(circle at 100% 6px, transparent 6px, var(--bg) 6.5px);
+            background-size: 100% 12px;
+            background-repeat: repeat-y;
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            .tape-track {
+                animation: none;
             }
 
             html {
-                scroll-behavior: smooth;
+                scroll-behavior: auto;
             }
+        }
 
-            body {
-                font-family: 'Inter', sans-serif;
-                color: var(--ink);
-                background: var(--bg);
-            }
+        .step-line {
+            background-image: repeating-linear-gradient(to bottom, var(--line) 0 6px, transparent 6px 12px);
+        }
 
-            .font-display {
-                font-family: 'Sora', sans-serif;
-            }
+        .card-hover {
+            transition: transform .25s ease, box-shadow .25s ease;
+        }
 
-            .font-mono {
-                font-family: 'JetBrains Mono', monospace;
-            }
+        .card-hover:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 20px 40px -18px rgba(7, 59, 35, 0.25);
+        }
 
-            .bg-soft {
-                background: var(--bg-soft);
-            }
+        .focus-ring:focus-visible {
+            outline: 2px solid var(--primary);
+            outline-offset: 2px;
+        }
 
-            .text-ink {
-                color: var(--ink);
-            }
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
 
-            .text-ink-soft {
-                color: var(--ink-soft);
-            }
+        ::-webkit-scrollbar-thumb {
+            background: var(--line);
+            border-radius: 8px;
+        }
 
-            .text-primary {
-                color: var(--primary);
-            }
+        .drawer {
+            transition: transform .3s ease;
+        }
 
-            .bg-primary {
-                background: var(--primary);
-            }
-
-            .bg-primary-dark {
-                background: var(--primary-dark);
-            }
-
-            .bg-primary-deep {
-                background: var(--primary-deep);
-            }
-
-            .bg-mint {
-                background: var(--mint);
-            }
-
-            .border-line {
-                border-color: var(--line);
-            }
-
-            .border-line2 {
-                border-color: var(--line2);
-            }
-
-            /* Receipt tape signature element */
-            .tape-wrap {
-                position: relative;
-                overflow: hidden;
-                -webkit-mask-image: linear-gradient(to bottom, transparent 0%, black 8%, black 92%, transparent 100%);
-                mask-image: linear-gradient(to bottom, transparent 0%, black 8%, black 92%, transparent 100%);
-            }
-
-            .tape-track {
-                animation: tape-scroll 16s linear infinite;
-            }
-
-            .tape-wrap:hover .tape-track {
-                animation-play-state: paused;
-            }
-
-            @keyframes tape-scroll {
-                from {
-                    transform: translateY(0);
-                }
-
-                to {
-                    transform: translateY(-50%);
-                }
-            }
-
-            .receipt-edge {
-                background-image: radial-gradient(circle at 0 6px, transparent 6px, var(--bg) 6.5px),
-                    radial-gradient(circle at 100% 6px, transparent 6px, var(--bg) 6.5px);
-                background-size: 100% 12px;
-                background-repeat: repeat-y;
-            }
-
-            @media (prefers-reduced-motion: reduce) {
-                .tape-track {
-                    animation: none;
-                }
-
-                html {
-                    scroll-behavior: auto;
-                }
-            }
-
-            .step-line {
-                background-image: repeating-linear-gradient(to bottom, var(--line) 0 6px, transparent 6px 12px);
-            }
-
-            .card-hover {
-                transition: transform .25s ease, box-shadow .25s ease;
-            }
-
-            .card-hover:hover {
-                transform: translateY(-4px);
-                box-shadow: 0 20px 40px -18px rgba(7, 59, 35, 0.25);
-            }
-
-            .focus-ring:focus-visible {
-                outline: 2px solid var(--primary);
-                outline-offset: 2px;
-            }
-
-            ::-webkit-scrollbar {
-                width: 8px;
-                height: 8px;
-            }
-
-            ::-webkit-scrollbar-thumb {
-                background: var(--line);
-                border-radius: 8px;
-            }
-
-            .drawer {
-                transition: transform .3s ease;
-            }
-
-            .modal-backdrop {
-                transition: opacity .2s ease;
-            }
-        </style>
+        .modal-backdrop {
+            transition: opacity .2s ease;
+        }
+    </style>
 </head>
 
 <body class="min-h-screen bg-slate-50">
@@ -315,16 +315,13 @@
                     <button class="w-full rounded-xl border border-line py-3 hover:bg-slate-50 transition font-medium">
                         Masuk dengan Google
                     </button>
-                    <!-- Link Alternatif Register -->
-                    @if (Route::has('register'))
-                        <p class="text-center text-sm text-ink-soft mt-8">
-                            Belum punya akun?
+                    <p class="text-center text-sm text-ink-soft mt-8">
+                        Belum punya akun?
 
-                            <a href="#" class="text-primary font-semibold hover:underline">
-                                Daftar
-                            </a>
-                        </p>
-                    @endif
+                        <a href="{{ route('register') }}" class="text-primary font-semibold hover:underline">
+                            Daftar
+                        </a>
+                    </p>
                 </div>
             </div>
         </div>
