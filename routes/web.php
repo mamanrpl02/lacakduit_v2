@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\UserControllers;
 
 Route::get('/', function () {
     return view('welcome');
@@ -34,6 +35,17 @@ Route::middleware('auth')->group(function () {
     Route::post('/categories', [CategoryController::class, 'store'])->name('categories.store');
     Route::put('/categories/{category}', [CategoryController::class, 'update'])->name('categories.update');
     Route::delete('/categories/{category}', [CategoryController::class, 'destroy'])->name('categories.destroy');
+
+
+
+
+
+
+
+
+
+    Route::get('/users', [UserControllers::class, 'index'])->name('users.index');
+    Route::delete('/users/{user}', [UserControllers::class, 'destroy'])->name('users.destroy');
 });
 
 require __DIR__ . '/auth.php';
