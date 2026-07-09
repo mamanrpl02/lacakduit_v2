@@ -281,7 +281,7 @@
 
                         <div class="flex items-center justify-between">
                             <label class="flex items-center gap-2 text-sm">
-                                <input type="checkbox" class="rounded border-line text-primary focus:ring-primary" />
+                                <input type="checkbox" name="remember" class="rounded border-line text-primary focus:ring-primary" />
 
                                 Ingat saya
                             </label>

@@ -17,15 +17,15 @@ class UserSeeder extends Seeder
         $users = [
             [
                 'sys_id_r_user' => (string) \Illuminate\Support\Str::uuid(),
-                'name' => 'Manzz',
-                'email' =>  'manz@example.com',
-                'password' => Hash::make('password123'),
+                'name' => 'Admin Platform',
+                'email' =>  'manzpkl11@gmail.com',
+                'password' => Hash::make('mamanrpl123'),
             ],
             [
                 'sys_id_r_user' => (string) \Illuminate\Support\Str::uuid(),
                 'name' => 'Maman',
-                'email' =>  'maman@example.com',
-                'password' => Hash::make('password123'),
+                'email' =>  'maman.mitratex@gmail.com',
+                'password' => Hash::make('mamanrpl123'),
             ],
         ];
         DB::table('r_user')->insert($users);
