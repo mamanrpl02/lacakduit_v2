@@ -12,14 +12,14 @@
                         <path d="M13 13l4 4"></path>
                     </svg>
 
-                    <input type="text" placeholder="Cari transaksi..."
+                    <input type="text" placeholder="Search categories..."
                         class="w-full pl-10 pr-4 py-2.5 rounded-xl border border-line focus:outline-none focus:ring-2 focus:ring-primary" />
                 </div>
 
             </div>
             <button onclick="openModalAdd()"
                 class="px-5 py-2.5 rounded-xl bg-primary text-white font-semibold hover:bg-primary-dark transition">
-                + Tambah Category
+                + Add Category
             </button>
         </div>
 
@@ -47,13 +47,38 @@
 
                     @foreach ($categories as $category)
                         <tr class="hover:bg-gray-50">
-                            <td class="px-6 py-4">{{ $category->icon }}</td>
-
-                            <td class="px-6 py-4">{{ $category->name }}</td>
+                            <td class="px-6 py-4"> <img
+                                    src="{{ asset('storage/' . ($category->icon ?? 'categories/defaultIcon.png')) }}"
+                                    alt="{{ $category->name }}" class="w-10 h-10 object-cover rounded-full"> </td>
 
                             <td class="px-6 py-4">
-                                <span class="px-3 py-1 rounded-full bg-gray-100 text-sm">
-                                    {{ $category->type == 'in' ? 'Pemasukan' : 'Pengeluaran' }}
+                                @php
+                                    // Ambil warna dari database atau gunakan default HEX dengan alpha
+                                    $bgColor = $category->color ?? '#f3f4f669';
+
+                                    // Cek jika formatnya adalah rgba, ubah menjadi rgb biasa untuk text color (solid)
+                                    if (str_starts_with($bgColor, 'rgba')) {
+                                        $textColor = str_replace(
+                                            'rgba(',
+                                            'rgb(',
+                                            preg_replace('/,\s*[0-9.]+\)$/', ')', $bgColor),
+                                        );
+                                    } else {
+                                        // Jika formatnya masih HEX bawaan, ambil warna aslinya atau default ke abu-abu gelap
+                                        $textColor = str_replace('69', '', $bgColor); // Hapus opacity hex jika ada
+                                    }
+                                @endphp
+
+                                <span class="px-3 py-1.5 rounded-full font-medium text-sm"
+                                    style="background-color: {{ $bgColor }}; color: {{ $textColor }};">
+                                    {{ $category->name }}
+                                </span>
+                            </td>
+
+                            <td class="px-6 py-4">
+                                <span
+                                    class="px-3 py-1 rounded-full {{ $category->type == 'in' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800' }} text-sm">
+                                    {{ $category->type == 'in' ? 'In' : 'Out' }}
                                 </span>
                             </td>
 
@@ -63,8 +88,11 @@
 
                             <td class="px-6 py-4">
                                 <div class="flex justify-center gap-2">
-                                    <button onclick="openModalAdd()"
-                                        class="px-3 py-1.5 rounded-lg border border-line hover:bg-gray-100">
+                                    <button type="button" onclick="openModalEdit(this)"
+                                        data-id="{{ $category->sys_id_r_category }}" data-name="{{ $category->name }}"
+                                        data-type="{{ $category->type }}" data-description="{{ $category->description }}"
+                                        data-color="{{ $category->color }}" data-colorhex="{{ $category->color_hex }}"
+                                        data-opacity="{{ $category->color_opacity }}">
                                         Edit
                                     </button>
                                     <form action="{{ route('categories.destroy', $category->sys_id_r_category) }}"
@@ -72,7 +100,7 @@
                                         @csrf @method('DELETE')
                                         <button type="submit"
                                             class="px-3 py-1.5 rounded-lg bg-red-500 text-white hover:bg-red-600">
-                                            Hapus
+                                            Delete
                                         </button>
                                     </form>
 
@@ -112,207 +140,330 @@
                 </button>
             </div>
         </div>
-    </div>
 
-    <!-- Modal Add-->
-    <div id="txModalAdd" class="fixed inset-0 z-50 hidden items-center justify-center bg-black/50 backdrop-blur-sm p-4">
-        <div class="bg-white w-full max-w-4xl rounded-2xl shadow-2xl flex flex-col max-h-[90vh]">
-            <!-- Header -->
-            <div class="flex items-center justify-between px-6 py-5 border-b border-line shrink-0">
-                <div>
-                    <h2 class="text-xl font-semibold">Add Category</h2>
-                    <p class="text-sm text-ink-soft">Masukan Kategori Anda</p>
+        <!-- Modal Add-->
+        <div id="txModalAdd" class="fixed inset-0 z-50 hidden items-center justify-center bg-black/50 backdrop-blur-sm p-4">
+            <form action="{{ route('categories.store') }}" method="POST" enctype="multipart/form-data"
+                class="bg-white w-full max-w-4xl rounded-2xl shadow-2xl flex flex-col max-h-[90vh]">
+                @csrf
+
+                <div class="flex items-center justify-between px-6 py-5 border-b border-line shrink-0">
+                    <div>
+                        <h2 class="text-xl font-semibold">Add Category</h2>
+                        <p class="text-sm text-ink-soft">Masukan Kategori Anda</p>
+                    </div>
+
+                    <button type="button" onclick="closeModalAdd()"
+                        class="w-10 h-10 rounded-full hover:bg-gray-100 flex items-center justify-center">
+                        <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M6 6L18 18M18 6L6 18" />
+                        </svg>
+                    </button>
                 </div>
 
-                <button onclick="closeModalAdd()"
-                    class="w-10 h-10 rounded-full hover:bg-gray-100 flex items-center justify-center">
-                    <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2">
-                        <path d="M6 6L18 18M18 6L6 18" />
-                    </svg>
-                </button>
-            </div>
-            <form class="space-y-5" action="{{ route('categories.store') }}" method="POST" enctype="multipart/form-data">
-                @csrf
-                <!-- Body (Scroll) -->
-                <div class="overflow-y-auto p-6 flex-1">
+                <div class="overflow-y-auto p-6 flex-1 space-y-5">
 
-                    <div class="grid lg:grid-cols-2 gap-5">
-
+                    <div class="grid lg:grid-cols-2 gap-5 pb-2">
                         <div>
                             <label class="block text-sm font-medium mb-2">
-                                Category Name*
+                                Category Name<span class="text-red-500">*</span>
                             </label>
-
-                            <input type="text" name="name"
+                            <input type="text" maxlength="50" name="name" id="categoryNameInput"
+                                oninput="updatePreviewText()" required
                                 class="w-full rounded-xl border border-line px-4 py-3 focus:border-green-500 focus:outline-none" />
                         </div>
 
                         <div>
-                            <label class="block text-sm font-medium mb-2"> Type*</label>
-
+                            <label class="block text-sm font-medium mb-2">
+                                Type<span class="text-red-500">*</span>
+                            </label>
                             <select name="type" class="w-full rounded-xl border border-line px-4 py-3">
-                                <option value="out" value="out">Out</option>
-                                <option value="in" value="in">In</option>
+                                <option value="out">Out</option>
+                                <option value="in">In</option>
                             </select>
                         </div>
                     </div>
+
                     <div>
-                        <label class="block text-sm font-medium mb-2"> Catatan </label>
+                        <label class="block text-sm font-medium mb-2"> DEscription </label>
                         <textarea name="description" rows="5" class="w-full rounded-xl border border-line px-4 py-3 resize-none"></textarea>
                     </div>
 
                     <div class="grid lg:grid-cols-2 gap-5 items-center">
-                        <!-- Input File -->
-                        <input type="file" name="icon" id="iconInput"
-                            class="w-full rounded-xl border border-line px-4 py-3" accept="image/*" />
-
-                        <!-- Wadah Preview -->
                         <div>
-                            <!-- Tampilan DIV jika belum ada file -->
+                            <label class="block text-sm font-medium mb-2">Icon</label>
+                            <input type="file" name="icon" id="iconInput"
+                                class="w-full rounded-xl border border-line px-4 py-3" accept="image/*" />
+                        </div>
+
+                        <div class="pt-6">
                             <div id="noPreview"
                                 class="w-16 h-16 rounded-lg border-2 border-dashed border-gray-300 flex items-center justify-center text-xs text-gray-400 bg-gray-50 text-center p-1">
                                 Belum ada icon
                             </div>
 
-                            <!-- Tampilan IMG (Disembunyikan dulu pakai class 'hidden') -->
                             <img src="" alt="Preview Icon" class="w-16 h-16 object-cover rounded-lg hidden"
                                 id="iconPreview">
                         </div>
                     </div>
 
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-sm font-medium mb-2"> Color Category </label>
+                            <div class="flex items-center gap-3">
+                                <input type="color" id="colorPicker" name="color_hex" value="#22c55e"
+                                    class="w-16 h-12 p-1 rounded-xl border border-line bg-white cursor-pointer"
+                                    oninput="updateRGBA()" />
+                                <span id="colorHexText" class="text-sm font-mono text-gray-500">#22C55E</span>
+                            </div>
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-medium mb-2">
+                                Opacity: <span id="opacityLabel">9%</span>
+                            </label>
+                            <input type="range" id="opacitySlider" name="color_opacity" min="0" max="100"
+                                value="9"
+                                class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-primary"
+                                oninput="updateRGBA()" />
+                        </div>
+                    </div>
+
+                    <input type="hidden" id="rgbaOutput" name="color" value="rgba(34, 197, 94, 0.09)">
+
+                    <div class="mt-3">
+                        <span class="text-xs text-gray-400 block mb-1">Preview Color:</span>
+                        <div id="colorPreviewBox" class="w-fit p-4 rounded-xl text-center font-medium transition-all"
+                            style="background-color: rgba(34, 197, 94, 0.09); color: #22c55e;">
+                            Category Name
+                        </div>
+                    </div>
+
                 </div>
 
-                <!-- Footer -->
-                <div class="flex flex-col-reverse sm:flex-row justify-end gap-3 px-6 py-5 border-t border-line shrink-0">
-                    <button onclick="closeModalAdd()" class="px-5 py-3 rounded-xl border border-line hover:bg-gray-100">
+                <div
+                    class="flex flex-col-reverse sm:flex-row justify-end gap-3 px-6 py-5 border-t border-line shrink-0 bg-white rounded-b-2xl">
+                    <button type="button" onclick="closeModalAdd()"
+                        class="px-5 py-3 rounded-xl border border-line hover:bg-gray-100 transition-colors">
                         Batal
                     </button>
 
-                    <button class="px-5 py-3 rounded-xl bg-primary text-white hover:bg-primary-dark">
+                    <button type="submit"
+                        class="px-5 py-3 rounded-xl bg-primary text-white hover:bg-primary-dark transition-colors">
                         Simpan Transaksi
                     </button>
                 </div>
             </form>
-
         </div>
-    </div>
 
-    <!-- Modal Edit-->
-    <div id="txModalEdit" class="fixed inset-0 z-50 hidden items-center justify-center bg-black/50 backdrop-blur-sm p-4">
-        <div class="bg-white w-full max-w-4xl rounded-2xl shadow-2xl flex flex-col max-h-[90vh]">
-            <!-- Header -->
-            <div class="flex items-center justify-between px-6 py-5 border-b border-line shrink-0">
-                <div>
-                    <h2 class="text-xl font-semibold">Edit Transaksi</h2>
-                    <p class="text-sm text-ink-soft">Lengkapi data transaksi.</p>
+
+        {{-- Modal Edit --}}
+        <div id="txModalEdit"
+            class="fixed inset-0 z-50 hidden items-center justify-center bg-black/50 backdrop-blur-sm p-4">
+            <form id="editCategoryForm" method="POST" enctype="multipart/form-data"
+                class="bg-white w-full max-w-4xl rounded-2xl shadow-2xl flex flex-col max-h-[90vh]">
+                @csrf
+                @method('PUT')
+                <div class="flex items-center justify-between px-6 py-5 border-b border-line shrink-0">
+                    <div>
+                        <h2 class="text-xl font-semibold">Edit Category</h2>
+                        <p class="text-sm text-ink-soft">Masukan Kategori Anda</p>
+                    </div>
+
+                    <button type="button" onclick="closeModalEdit()"
+                        class="w-10 h-10 rounded-full hover:bg-gray-100 flex items-center justify-center">
+                        <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M6 6L18 18M18 6L6 18" />
+                        </svg>
+                    </button>
                 </div>
 
-                <button onclick="closeModalAdd()"
-                    class="w-10 h-10 rounded-full hover:bg-gray-100 flex items-center justify-center">
-                    <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2">
-                        <path d="M6 6L18 18M18 6L6 18" />
-                    </svg>
-                </button>
-            </div>
+                <div class="overflow-y-auto p-6 flex-1 space-y-5">
 
-            <!-- Body (Scroll) -->
-            <div class="overflow-y-auto p-6 flex-1">
-                <form class="space-y-5">
-                    <div class="grid lg:grid-cols-2 gap-5">
+                    <div class="grid lg:grid-cols-2 gap-5 pb-2">
                         <div>
                             <label class="block text-sm font-medium mb-2">
-                                Nama Transaksi
+                                Category Name<span class="text-red-500">*</span>
                             </label>
-
-                            <input type="text" class="w-full rounded-xl border border-line px-4 py-3" />
-                        </div>
-
-                        <div>
-                            <label class="block text-sm font-medium mb-2"> Nominal </label>
-
-                            <input type="number" class="w-full rounded-xl border border-line px-4 py-3" />
-                        </div>
-
-                        <div>
-                            <label class="block text-sm font-medium mb-2"> Jenis </label>
-
-                            <select class="w-full rounded-xl border border-line px-4 py-3">
-                                <option>Pemasukan</option>
-                                <option>Pengeluaran</option>
-                            </select>
-                        </div>
-
-                        <div>
-                            <label class="block text-sm font-medium mb-2"> Kategori </label>
-
-                            <select class="w-full rounded-xl border border-line px-4 py-3">
-                                <option>Makanan</option>
-                                <option>Transportasi</option>
-                            </select>
-                        </div>
-
-                        <div>
-                            <label class="block text-sm font-medium mb-2"> Tanggal </label>
-
-                            <input type="date" class="w-full rounded-xl border border-line px-4 py-3" />
+                            <input type="text" maxlength="50" name="name" id="editName"
+                                oninput="updateEditPreviewText()" required
+                                class="w-full rounded-xl border border-line px-4 py-3 focus:border-green-500 focus:outline-none" />
                         </div>
 
                         <div>
                             <label class="block text-sm font-medium mb-2">
-                                Metode Pembayaran
+                                Type<span class="text-red-500">*</span>
                             </label>
-
-                            <select class="w-full rounded-xl border border-line px-4 py-3">
-                                <option>Tunai</option>
-                                <option>Transfer</option>
-                                <option>E-Wallet</option>
+                            <select name="type" id="editType" class="w-full rounded-xl border border-line px-4 py-3">
+                                <option value="out">Out</option>
+                                <option value="in">In</option>
                             </select>
                         </div>
                     </div>
 
                     <div>
-                        <label class="block text-sm font-medium mb-2"> Catatan </label>
-
-                        <textarea name="description" rows="5" class="w-full rounded-xl border border-line px-4 py-3 resize-none"></textarea>
+                        <label class="block text-sm font-medium mb-2"> DEscription </label>
+                        <textarea name="description" id="editDescription" rows="5"
+                            class="w-full rounded-xl border border-line px-4 py-3 resize-none"></textarea>
                     </div>
 
-                    <!-- Contoh field tambahan -->
+                    <div class="grid lg:grid-cols-2 gap-5 items-center">
+                        <div>
+                            <label class="block text-sm font-medium mb-2">Icon</label>
+                            <input type="file" name="icon" id="editIconInput"
+                                class="w-full rounded-xl border border-line px-4 py-3" accept="image/*" />
+                        </div>
 
-                    <div class="grid lg:grid-cols-2 gap-5">
+                        <div class="pt-6">
+                            <div id="editNoPreview"
+                                class="w-16 h-16 rounded-lg border-2 border-dashed border-gray-300 flex items-center justify-center text-xs text-gray-400 bg-gray-50 text-center p-1">
+                                Belum ada icon
+                            </div>
+
+                            <img src="" alt="Preview Icon" class="w-16 h-16 object-cover rounded-lg hidden"
+                                id="editIconPreview">
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-sm font-medium mb-2"> Color Category </label>
+                            <div class="flex items-center gap-3">
+                                <input type="color" oninput="updateEditRGBA()" id="editColorPicker" name="color_hex"
+                                    value="#22c55e"
+                                    class="w-16 h-12 p-1 rounded-xl border border-line bg-white cursor-pointer" />
+                                <span id="editColorHexText" class="text-sm font-mono text-gray-500">#22C55E</span>
+                            </div>
+                        </div>
+
                         <div>
                             <label class="block text-sm font-medium mb-2">
-                                Referensi
+                                Opacity: <span id="editOpacityLabel">9%</span>
                             </label>
-
-                            <input type="text" class="w-full rounded-xl border border-line px-4 py-3" />
-                        </div>
-
-                        <div>
-                            <label class="block text-sm font-medium mb-2"> Status </label>
-
-                            <select class="w-full rounded-xl border border-line px-4 py-3">
-                                <option>Selesai</option>
-                                <option>Pending</option>
-                            </select>
+                            <input type="range" id="editOpacitySlider" name="color_opacity" min="0"
+                                max="100" value="9"
+                                class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-primary"
+                                oninput="updateEditRGBA()" />
                         </div>
                     </div>
-                </form>
-            </div>
 
-            <!-- Footer -->
-            <div class="flex flex-col-reverse sm:flex-row justify-end gap-3 px-6 py-5 border-t border-line shrink-0">
-                <button onclick="closeModalEdit()" class="px-5 py-3 rounded-xl border border-line hover:bg-gray-100">
-                    Batal
-                </button>
+                    <input type="hidden" id="editRgbaOutput" name="color" value="rgba(34, 197, 94, 0.09)">
 
-                <button class="px-5 py-3 rounded-xl bg-primary text-white hover:bg-primary-dark">
-                    Simpan Transaksi
-                </button>
-            </div>
+                    <div class="mt-3">
+                        <span class="text-xs text-gray-400 block mb-1">Preview Color:</span>
+                        <div id="editColorPreviewBox" class="w-fit p-4 rounded-xl text-center font-medium transition-all"
+                            style="background-color: rgba(34, 197, 94, 0.09); color: #22c55e;">
+                            Category Name
+                        </div>
+                    </div>
+
+                </div>
+
+                <div
+                    class="flex flex-col-reverse sm:flex-row justify-end gap-3 px-6 py-5 border-t border-line shrink-0 bg-white rounded-b-2xl">
+                    <button type="button" onclick="closeModalEdit()"
+                        class="px-5 py-3 rounded-xl border border-line hover:bg-gray-100 transition-colors">
+                        Batal
+                    </button>
+
+                    <button type="submit"
+                        class="px-5 py-3 rounded-xl bg-primary text-white hover:bg-primary-dark transition-colors">
+                        Simpan Transaksi
+                    </button>
+                </div>
+            </form>
         </div>
+
+
+
+
     </div>
 
+
+
     <script>
+        function updateEditPreviewText() {
+
+            console.log({
+                name: document.getElementById("editName"),
+                picker: document.getElementById("editColorPicker"),
+                slider: document.getElementById("editOpacitySlider"),
+                preview: document.getElementById("editColorPreviewBox"),
+                hexText: document.getElementById("editColorHexText"),
+                opacity: document.getElementById("editOpacityLabel"),
+            });
+            const value = document.getElementById("editName").value;
+
+            document.getElementById("editColorPreviewBox").innerText =
+                value || "Category Name";
+        }
+
+
+        function updatePreviewText() {
+            // Ambil nilai yang sedang diketik dari input name
+            const inputValue = document.getElementById('categoryNameInput').value;
+            const previewBox = document.getElementById('colorPreviewBox');
+
+            // Jika input kosong, tampilkan teks default (placeholder) agar tidak blank
+            if (inputValue.trim() === "") {
+                previewBox.innerText = "Teks Konten Kategori";
+            } else {
+                previewBox.innerText = inputValue;
+            }
+        }
+
+        function hexToRgb(hex) {
+            hex = hex.replace(/^#/, '');
+            let bigInt = parseInt(hex, 16);
+            let r = (bigInt >> 16) & 255;
+            let g = (bigInt >> 8) & 255;
+            let b = bigInt & 255;
+            return {
+                r,
+                g,
+                b
+            };
+        }
+
+        function updateRGBA() {
+            const hexColor = document.getElementById('colorPicker').value;
+            const opacityValue = document.getElementById('opacitySlider').value;
+
+            // Membagi dengan 100 agar nilai 9 menjadi 0.09
+            const alpha = (opacityValue / 100).toFixed(2);
+
+            const rgb = hexToRgb(hexColor);
+            const rgbaString = `rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, ${alpha})`;
+
+            document.getElementById('colorHexText').innerText = hexColor.toUpperCase();
+            document.getElementById('opacityLabel').innerText = opacityValue + '%';
+            document.getElementById('rgbaOutput').value = rgbaString;
+
+            const previewBox = document.getElementById('colorPreviewBox');
+            previewBox.style.backgroundColor = rgbaString;
+            previewBox.style.color = hexColor;
+        }
+
+        function updateEditRGBA() {
+
+            const hexColor = document.getElementById("editColorPicker").value;
+            const opacityValue = document.getElementById("editOpacitySlider").value;
+
+            const alpha = (opacityValue / 100).toFixed(2);
+
+            const rgb = hexToRgb(hexColor);
+
+            const rgba = `rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, ${alpha})`;
+
+            document.getElementById("editColorHexText").innerText = hexColor.toUpperCase();
+            document.getElementById("editOpacityLabel").innerText = opacityValue + "%";
+            document.getElementById("editRgbaOutput").value = rgba;
+
+            const preview = document.getElementById("editColorPreviewBox");
+            preview.style.backgroundColor = rgba;
+            preview.style.color = hexColor;
+        }
+
         document.getElementById('iconInput').addEventListener('change', function(event) {
             const file = event.target.files[0];
             const preview = document.getElementById('iconPreview');
@@ -369,13 +520,36 @@
             document.body.classList.remove("overflow-hidden");
         }
 
-        function openModalEdit() {
+
+        function openModalEdit(button) {
+
+            console.log(button.dataset.colorhex);
+
+            document.getElementById("editColorPicker").value = button.dataset.colorhex;
+
+            console.log(document.getElementById("editColorPicker").value);
+
+
             const modal = document.getElementById("txModalEdit");
 
             modal.classList.remove("hidden");
             modal.classList.add("flex");
 
             document.body.classList.add("overflow-hidden");
+
+            document.getElementById("editName").value = button.dataset.name;
+            document.getElementById("editType").value = button.dataset.type;
+            document.getElementById("editDescription").value = button.dataset.description;
+
+            document.getElementById("editColorPicker").value = button.dataset.colorhex;
+            document.getElementById("editOpacitySlider").value = button.dataset.opacity;
+            document.getElementById("editRgbaOutput").value = button.dataset.color;
+
+            document.getElementById("editCategoryForm").action =
+                `/categories/${button.dataset.id}`;
+
+            // update preview
+            updateEditPreview();
         }
 
         function closeModalEdit() {
@@ -386,5 +560,63 @@
 
             document.body.classList.remove("overflow-hidden");
         }
+
+        function updateEditPreview() {
+
+            console.log("updateEditPreview jalan");
+
+
+            const name = document.getElementById("editName").value;
+            const hex = document.getElementById("editColorPicker").value;
+            const opacity = document.getElementById("editOpacitySlider").value;
+
+            console.log(name, hex, opacity);
+
+
+            const rgb = hexToRgb(hex);
+            const alpha = opacity / 100;
+
+            const rgba = `rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, ${alpha})`;
+
+            document.getElementById("editColorHexText").innerText = hex.toUpperCase();
+            document.getElementById("editOpacityLabel").innerText = opacity + "%";
+
+            document.getElementById("editRgbaOutput").value = rgba;
+
+            const preview = document.getElementById("editColorPreviewBox");
+
+            preview.style.backgroundColor = rgba;
+            preview.style.color = hex;
+            preview.innerText = name || "Category Name";
+        }
+
+        document.getElementById("editIconInput").addEventListener("change", function(e) {
+
+            const file = e.target.files[0];
+
+            const preview = document.getElementById("editIconPreview");
+            const noPreview = document.getElementById("editNoPreview");
+
+            if (!file) {
+                preview.src = "";
+                preview.classList.add("hidden");
+                noPreview.classList.remove("hidden");
+                return;
+            }
+
+            const reader = new FileReader();
+
+            reader.onload = function(event) {
+
+                preview.src = event.target.result;
+
+                preview.classList.remove("hidden");
+                noPreview.classList.add("hidden");
+
+            };
+
+            reader.readAsDataURL(file);
+
+        });
     </script>
 @endsection

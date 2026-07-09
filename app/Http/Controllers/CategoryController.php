@@ -27,11 +27,11 @@ class CategoryController extends Controller
     {
 
         $request->validate([
-            'icon' => 'nullable|image|mimes:jpg,jpeg,png,svg|max:2048',
-            'color' => 'nullable|string|max:255',
-            'name' => 'required|string|max:255',
+            'name' => 'required|string|max:50',
             'type' => 'required|in:in,out',
             'description' => 'nullable|string',
+            'icon' => 'nullable|image|mimes:jpg,jpeg,png,svg|max:2048',
+            'color' => 'nullable|string|max:255',
 
         ]);
 
@@ -53,12 +53,21 @@ class CategoryController extends Controller
         return redirect()->back()->with('success', 'Kategori berhasil ditambahkan.');
     }
 
+    public function edit(Category $category)
+    {
+        return view('categories.edit', compact('category.'));
+    }
+
     // Proses Update Data dari Modal Edit
     public function update(Request $request, Category $category)
     {
         $request->validate([
-            'name' => 'required|string|max:255',
+            'name' => 'required|string|max:50',
             'type' => 'required|in:in,out',
+            'description' => 'nullable|string',
+            'icon' => 'nullable|image|mimes:jpg,jpeg,png,svg|max:2048',
+            'color' => 'nullable|string|max:255',
+
         ]);
 
         $category->update($request->all());
