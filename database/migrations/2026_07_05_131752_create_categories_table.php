@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('categories', function (Blueprint $table) {
+        Schema::create('r_categories', function (Blueprint $table) {
             $table->uuid('sys_id_r_category')->primary()->unique();
             $table->string('name');
             $table->enum('type', ['in', 'out']);

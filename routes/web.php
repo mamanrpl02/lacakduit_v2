@@ -1,9 +1,10 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\UserControllers;
+use App\Http\Controllers\WaletsController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\CategoryController;
-use App\Http\Controllers\UserControllers;
 
 Route::get('/', function () {
     return view('welcome');
@@ -37,10 +38,10 @@ Route::middleware('auth')->group(function () {
     Route::delete('/categories/{category}', [CategoryController::class, 'destroy'])->name('categories.destroy');
 
 
-
-
-
-
+    Route::get('/walets', [WaletsController::class, 'index'])->name('walets.index');
+    Route::post('/walets', [WaletsController::class, 'store'])->name('walets.store');
+    Route::put('/walets/{walet}', [WaletsController::class, 'update'])->name('walets.update');
+    Route::delete('/walets/{walet}', [WaletsController::class, 'destroy'])->name('walets.destroy');
 
 
 

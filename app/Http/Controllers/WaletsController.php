@@ -4,62 +4,73 @@ namespace App\Http\Controllers;
 
 use App\Models\Walets;
 use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Auth;
 
 class WaletsController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
+    // Menampilkan halaman utama (di sini juga modal berada)
     public function index()
     {
-        //
+
+        $userId = Auth::id();
+        $walets = Walets::where('r_users', $userId)
+            ->orderBy('updated_at', 'desc')->get();
+
+
+        return view('walet', compact('walets'));
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     */
+    // Proses Simpan Data Baru dari Modal Add
     public function store(Request $request)
     {
-        //
+
+        $request->validate([
+            'name' => 'required|string|max:50',
+            'description' => 'nullable|string',
+            'icon' => 'nullable|image|mimes:jpg,jpeg,png,svg|max:2048',
+
+        ]);
+
+        $icon = null;
+
+        if ($request->hasFile('icon')) {
+            $icon = $request->file('icon')->store('walets', 'public');
+        }
+
+        Walets::create([
+            'name' => $request->name,
+            'description' => $request->description,
+            'icon' => $icon,
+            'r_users' => auth()->user()->sys_id_r_user
+        ]);
+
+        return redirect()->back()->with('success', 'Walet berhasil ditambahkan.');
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(Walets $walets)
+    public function edit(Walets $walet)
     {
-        //
+        return view('walets.edit', compact('walet'));
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Walets $walets)
+    // Proses Update Data dari Modal Edit
+    public function update(Request $request, Walets $walet)
     {
-        //
+        $request->validate([
+            'name' => 'required|string|max:50',
+            'description' => 'nullable|string',
+            'icon' => 'nullable|image|mimes:jpg,jpeg,png,svg|max:2048',
+
+        ]);
+
+        $walet->update($request->all());
+        return redirect()->back()->with('success', 'Walet berhasil diubah.');
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, Walets $walets)
+    // Proses Hapus Data
+    public function destroy(Walets $walet)
     {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(Walets $walets)
-    {
-        //
+        $walet->delete();
+        return redirect()->back()->with('success', 'Walet berhasil dihapus.');
     }
 }
