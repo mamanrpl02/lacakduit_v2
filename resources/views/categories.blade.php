@@ -115,29 +115,58 @@
         <!-- Footer -->
         <div class="flex flex-col sm:flex-row justify-between items-center gap-4 p-5 border-t border-line">
             <p class="text-sm text-gray-500">
-                Menampilkan 1-10 dari 150 transaksi
+                Menampilkan {{ $categories->firstItem() }}-{{ $categories->lastItem() }} dari {{ $categories->total() }} transaksi
             </p>
 
             <div class="flex gap-2">
-                <button class="px-4 py-2 rounded-lg border border-line hover:bg-gray-100">
-                    Sebelumnya
-                </button>
 
-                <button class="px-4 py-2 rounded-lg bg-primary text-white">
-                    1
-                </button>
+                <!-- Looping Nomor Halaman dengan Penjagaan Maksimal 4 Halaman -->
+                @php
+                    // 1. Tentukan berapa banyak tombol nomor halaman yang ingin ditampilkan
+                    $limit = 4;
 
-                <button class="px-4 py-2 rounded-lg border border-line hover:bg-gray-100">
-                    2
-                </button>
+                    // 2. Hitung halaman awal (start) agar halaman aktif berada di tengah/proporsional
+                    $start = max(1, $categories->currentPage() - floor(($limit - 1) / 2));
 
-                <button class="px-4 py-2 rounded-lg border border-line hover:bg-gray-100">
-                    3
-                </button>
+                    // 3. Hitung halaman akhir (end) berdasarkan halaman awal + limit
+                    $end = min($categories->lastPage(), $start + $limit - 1);
 
-                <button class="px-4 py-2 rounded-lg border border-line hover:bg-gray-100">
-                    Berikutnya
-                </button>
+                    // 4. Koreksi ulang halaman awal jika halaman akhir sudah mentok di batas total page
+                    $start = max(1, $end - $limit + 1);
+                @endphp
+
+                @if ($start > 1)
+                    <a href="{{ $categories->url(1) }}">
+                        <button class="px-4 py-2 rounded-lg border border-line hover:bg-gray-100">&laquo; First</button>
+                    </a>
+                    <span class="px-2 text-gray-400">...</span>
+                @endif
+
+
+                @foreach ($categories->getUrlRange($start, $end) as $page => $url)
+                    @if ($page == $categories->currentPage())
+                        <!-- Tampilan untuk Halaman yang Sedang Aktif -->
+                        <button class="px-4 py-2 rounded-lg border border-line bg-primary text-white">
+                            <span class="active" style="font-weight: bold; margin: 0 5px;">{{ $page }}</span>
+                        </button>
+                    @else
+                        <!-- Tampilan untuk Halaman Lainnya -->
+                        <a href="{{ $url }}">
+                            <button class="px-4 py-2 rounded-lg border border-line hover:bg-gray-100">
+                                {{ $page }}
+                            </button>
+                        </a>
+                    @endif
+                @endforeach
+
+                <!-- Tombol ke Halaman Terakhir (Hanya muncul jika halaman akhir belum mentok) -->
+                @if ($end < $categories->lastPage())
+                    <span class="px-2 text-gray-400">...</span>
+                    <a href="{{ $categories->url($categories->lastPage()) }}">
+                        <button class="px-4 py-2 rounded-lg border border-line hover:bg-gray-100">Last &raquo;</button>
+                    </a>
+                @endif
+
             </div>
         </div>
 

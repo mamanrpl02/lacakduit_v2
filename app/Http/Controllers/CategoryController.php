@@ -14,9 +14,10 @@ class CategoryController extends Controller
 
         $userId = Auth::id();
 
+        $categories = Category::where('r_users', $userId)
+            ->latest()
+            ->paginate(3);
 
-        $categories = Category::WHERE('r_users', $userId)
-            ->orderBy('updated_at', 'desc')->get();
 
 
         return view('categories', compact('categories'));

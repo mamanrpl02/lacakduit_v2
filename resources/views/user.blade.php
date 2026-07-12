@@ -37,7 +37,7 @@
                     </tr>
                 </thead>
 
-                <tbody class="divide-y divide-line">
+                <tbody class=" ">
 
                     @forelse  ($users as $key => $user)
                         <tr class="hover:bg-gray-50">

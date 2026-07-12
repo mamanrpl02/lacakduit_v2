@@ -19,12 +19,14 @@ class UserSeeder extends Seeder
                 'sys_id_r_user' => (string) \Illuminate\Support\Str::uuid(),
                 'name' => 'Admin Platform',
                 'email' =>  'manzpkl11@gmail.com',
+                'role' => 'admin_platform',
                 'password' => Hash::make('mamanrpl123'),
             ],
             [
                 'sys_id_r_user' => (string) \Illuminate\Support\Str::uuid(),
                 'name' => 'Maman',
                 'email' =>  'maman.mitratex@gmail.com',
+                'role' => 'user',
                 'password' => Hash::make('mamanrpl123'),
             ],
         ];

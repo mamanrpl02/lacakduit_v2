@@ -10,7 +10,7 @@
         </button>
         <div>
             <p class="font-display font-semibold" id="dash-greeting">
-                Halo, Kamu 👋
+                Halo, {{ auth()->user()->name }}
             </p>
             <p class="text-xs text-ink-soft">
                 Ringkasan keuangan bulan ini

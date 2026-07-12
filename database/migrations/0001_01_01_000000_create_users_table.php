@@ -15,6 +15,7 @@ return new class extends Migration
             $table->uuid('sys_id_r_user')->primary()->unique();
             $table->string('name');
             $table->string('email')->unique();
+            $table->enum('role', ['user', 'admin_platform'])->default('admin_platform');
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
             $table->rememberToken();

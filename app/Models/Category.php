@@ -11,7 +11,7 @@ class Category extends Model
 {
 
     use HasUuids; // 2. Gunakan Trait
-
+protected $table = 'r_categories';
     protected $primaryKey = 'sys_id_r_category';
     public $incrementing = false;
     protected $keyType = 'string';

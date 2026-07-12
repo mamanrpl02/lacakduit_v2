@@ -15,8 +15,8 @@ class WaletsController extends Controller
 
         $userId = Auth::id();
         $walets = Walets::where('r_users', $userId)
-            ->orderBy('updated_at', 'desc')->get();
-
+            ->latest()
+            ->paginate(3);
 
         return view('walet', compact('walets'));
     }
