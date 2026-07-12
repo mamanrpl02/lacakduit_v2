@@ -260,7 +260,7 @@
                             <!-- Error Message Email -->
                             @if ($errors->get('email'))
                                 <div class="text-xs text-rose-400 mt-1.5 flex items-center gap-1">
-                                    ⚠️ <span>{{ $errors->first('email') }}</span>
+                                    <span>{{ $errors->first('email') }}</span>
                                 </div>
                             @endif
                         </div>
@@ -281,12 +281,13 @@
 
                         <div class="flex items-center justify-between">
                             <label class="flex items-center gap-2 text-sm">
-                                <input type="checkbox" name="remember" class="rounded border-line text-primary focus:ring-primary" />
+                                <input type="checkbox" name="remember"
+                                    class="rounded border-line text-primary focus:ring-primary" />
 
                                 Ingat saya
                             </label>
                             @if (Route::has('password.request'))
-                                <a href="#" class="text-sm text-primary hover:underline">
+                                <a href="{{ route('password.request') }}" class="text-sm text-primary hover:underline">
                                     Lupa Password?
                                 </a>
                             @endif
@@ -294,7 +295,7 @@
 
                         @if ($errors->get('password'))
                             <div class="text-xs text-rose-400 mt-1.5 flex items-center gap-1">
-                                ⚠️ <span> sasd{{ $errors->first('password') }}</span>
+                                <span>{{ $errors->first('password') }}</span>
                             </div>
                         @endif
 
